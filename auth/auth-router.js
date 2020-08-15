@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const users = require("../api/db-helpers.js");
 const jwt = require("jsonwebtoken");
 const secrets = require("../config/secrets.js");
+const { jwtSecret } = require("../config/secrets.js");
 
 router.post("/register", async (req, res) => {
 	// implement registration
@@ -18,14 +19,14 @@ router.post("/register", async (req, res) => {
 	}
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", (req, res) => {
 	// implement login
 	let { username, password } = req.body;
 
 	users
 		.findBy({ username })
 		.then(([user]) => {
-      console.log(user)
+    
 			if (user && bcrypt.compareSync(password, user.password)) {
 				const token = generateToken(user);
 				res.status(200).json({ message: "Welcome to Dad Jokes Api!", token });
